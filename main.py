@@ -4,7 +4,7 @@
 from view.player import PlayerView
 from view.tournament import TournamentView
 
-from controller.base import Controller 
+from controller.main import Controller 
 
 def main():
 	chess_game = Controller()

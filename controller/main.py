@@ -1,3 +1,5 @@
+from secrets import choice
+from view.base import Views
 from view.player import PlayerView
 from view.tournament import TournamentView
 from model.tournament import Tournament
@@ -14,8 +16,31 @@ class Controller:
 		# self.round = round
 
 		# Instancier la vue
+		self.base_view = Views
 		self.player_view = PlayerView
 		self.tournament_view = TournamentView
+
+	# gestion des menus 
+	# faire les différents menu de base 
+	# structurer les choses plus simplement avant 
+	# construire le flow pour mieux comprendre
+
+	def start_menu(self):
+		self.base_view.show_menu_command(self)
+		user_choice = self.base_view.prompt_menu_command(self)
+		
+		while True:
+			if user_choice == 't':
+				self.create_tournament()
+				self.base_view.show_menu_command(self)
+				self.base_view.prompt_menu_command(self)
+			elif user_choice == 'p':
+				self.add_height_players()
+				self.base_view.show_menu_command(self)
+				self.base_view.prompt_menu_command(self)
+			elif user_choice == 'q':
+				print("Merci d'avoir utilisé ce programme. Au revoir")
+
 
 	def create_tournament(self):
 		tournament = self.tournament_view.prompt_tournament(self)
@@ -29,7 +54,6 @@ class Controller:
 			tournament[4], 
 			tournament[5], 
 			tournament[6], 
-			tournament[7]
 			)
 
 
@@ -50,8 +74,10 @@ class Controller:
 	def sort_players(self):
 		# Au début du premier tour, triez tous les joueurs en fonction de leur classement.
 		
-		#if self.tournament.match.round.count == 1:
-			ranked_players = sorted(self.players, key=lambda x: x.ranking, reverse=False)
+		#if self.tournament.round_count == 1:
+
+			# ranked_players = sorted(self.players, key=lambda x: x.ranking, reverse=False)
+			# return ranked_players
 				
 		# else:
 		#	pass
@@ -61,7 +87,7 @@ class Controller:
 
 
 		# Si plusieurs joueurs ont le même nombre de points, triez-les en fonction de leur rang.
-
+		pass
 
 
 	def pair_players(self):
@@ -117,6 +143,4 @@ class Controller:
 		pass
 
 	def run(self):
-		self.create_tournament()
-		self.add_height_players()
-		self.sort_players()
+		self.start_menu()
