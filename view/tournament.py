@@ -6,7 +6,7 @@ import inquirer
 class TournamentView:
 
     # les éléments doivent être envoyé dans le controller pour vérification des données
-    # faire en sorte que le programme ne continue pas si 
+    # faire en sorte que le programme ne continue pas si la donnée est fausse
 
     def prompt_tournament(self):
         name = str(input("tapez le nom du tournois : "))

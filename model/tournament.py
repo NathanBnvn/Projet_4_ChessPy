@@ -3,9 +3,9 @@
 
 from tinydb import TinyDB
 from collections import UserList
-from .match import Match
-from .round import Round
-from .player import Player
+# from .match import Match
+# from .round import Round
+# from .player import Player
 
 class Tournament:
         
@@ -15,7 +15,7 @@ class Tournament:
                 self.start_date = start_date
                 self.end_date = end_date
                 self.round_count = round_count
-                self.round_list = Round()
-                self.player = Player()
+                self.round_list = round_list
+                self.player = player
                 self.time_check = time_check
                 self.description = description

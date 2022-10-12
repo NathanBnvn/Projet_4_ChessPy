@@ -1,113 +1,64 @@
-from secrets import choice
+from os import system, name
 from view.base import Views
+from .player import PlayerController
+from .tournament import TournamentController
+from .report import ReportController
 from view.player import PlayerView
-from view.tournament import TournamentView
 from model.tournament import Tournament
-from model.player import Player
+from view.tournament import TournamentView
 
-class Controller:
+# renommer main controller
+# et segmenter le controller en plusieurs 
+class MainController:
 
-	def __init__(self,):
-		# Instancier le model
- 
-		self.players = []
-		self.tournament = Tournament
+	def __init__(self):
 		# self.match = match
 		# self.round = round
+		self.player_controller = PlayerController
+		self.tournament_controller = TournamentController
+		self.report_controller = ReportController
 
 		# Instancier la vue
 		self.base_view = Views
-		self.player_view = PlayerView
-		self.tournament_view = TournamentView
 
 	# gestion des menus 
 	# faire les différents menu de base 
 	# structurer les choses plus simplement avant 
 	# construire le flow pour mieux comprendre
 
+	# définir des fonctions pour nettoyer le terminal
+	def clean_terminal(self):
+		    # for windows
+			if name == 'nt':
+				_ = system('cls')
+			
+			# for mac and linux(here, os.name is 'posix')
+			else:
+				_ = system('clear')
+
 	def start_menu(self):
+		self.clean_terminal()
 		self.base_view.show_menu_command(self)
 		user_choice = self.base_view.prompt_menu_command(self)
-		
+		self.clean_terminal()
+
 		while True:
-			if user_choice == 't':
-				self.create_tournament()
-				self.base_view.show_menu_command(self)
-				self.base_view.prompt_menu_command(self)
-			elif user_choice == 'p':
-				self.add_height_players()
-				self.base_view.show_menu_command(self)
-				self.base_view.prompt_menu_command(self)
-			elif user_choice == 'q':
+			if user_choice == '1':
+				self.tournament_controller.create_tournament(self)
+				self.start_menu()
+			elif user_choice == '2':
+				self.player_controller.add_height_players(self)
+				self.start_menu()
+			elif user_choice == '3':
+				self.report_controller.start_report_menu(self)
+				self.start_menu()
+			elif user_choice == '4':
 				print("Merci d'avoir utilisé ce programme. Au revoir")
+				exit()
+			else:
+				print("Commande non valide. Veuillez réessayer.")
+				self.start_menu()
 
-
-	def create_tournament(self):
-		tournament = self.tournament_view.prompt_tournament(self)
-		if not tournament:
-			return
-		tournament = Tournament(
-			tournament[0], 
-			tournament[1], 
-			tournament[2], 
-			tournament[3], 
-			tournament[4], 
-			tournament[5], 
-			tournament[6], 
-			)
-
-
-	def add_height_players(self):
-		while len(self.players) < 3:
-			player = self.player_view.prompt_player(self)
-			if not player:
-				return
-			player = Player(
-				player[0], 
-				player[1], 
-				player[2], 
-				player[3], 
-				player[4])
-			self.players.append(player)
-
-
-	def sort_players(self):
-		# Au début du premier tour, triez tous les joueurs en fonction de leur classement.
-		
-		#if self.tournament.round_count == 1:
-
-			# ranked_players = sorted(self.players, key=lambda x: x.ranking, reverse=False)
-			# return ranked_players
-				
-		# else:
-		#	pass
-
-		# Au prochain tour, triez tous les joueurs en fonction de leur nombre total de points. 
-		
-
-
-		# Si plusieurs joueurs ont le même nombre de points, triez-les en fonction de leur rang.
-		pass
-
-
-	def pair_players(self):
-		# # Divisez les joueurs en deux moitiés, une supérieure et une inférieure.
-		# half = len(ranked_players) //2
-
-		# Le meilleur joueur de la moitié supérieure est jumelé avec le meilleur joueur de la moitié inférieure, et ainsi de suite. 
-		# Si nous avons huit joueurs triés par rang, alors le joueur 1 est jumelé avec le joueur 5, 
-		# le joueur 2 est jumelé avec le joueur 6, etc.
-		# for hier_rank, lower_rank in zip(ranked_players, ranked_players[half:]):
-		# 	match = Match([hier_rank, 0], [lower_rank, 0])
-		
-		# Au prochain tour, triez tous les joueurs en fonction de leur nombre total de points. 
-		# Si plusieurs joueurs ont le même nombre de points, triez-les en fonction de leur rang.
-		# Associez le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4, et ainsi de suite. 
-		# Si le joueur 1 a déjà joué contre le joueur 2, associez-le plutôt au joueur 3.
-
-		# for player_one, player_two in zip(ranked_players[0::2], ranked_players[1::2]):
-		# 	pass
-		pass
 
 	def register_result(self):
 		# Sauvegarder le résultat d'un match
@@ -115,31 +66,10 @@ class Controller:
 
 	def update_ranking(self):
 		# Mettre à jour le classement 
-
 		pass
 
 	def finish_tournament(self):
 		# Fin du tournois
-		pass
-
-	def generate_report(self):
-		# Liste de tous les acteurs :
-		
-		# par ordre alphabétique ;
-		#alphabetical_list = sorted(self.players, key=lambda x: x.last_name, reverse=False)
-		#print(alphabetical_list)
-		
-		# par classement
-		#ranked_list = sorted(self.players, key=lambda x: x.ranking, reverse=False)
-		#print(ranked_list)
-
-		# Liste de tous les joueurs d'un tournoi :
-		# par ordre alphabétique ;
-		# par classement.
-
-		# Liste de tous les tournois.
-		# Liste de tous les tours d'un tournoi.
-		# Liste de tous les matchs d'un tournoi.
 		pass
 
 	def run(self):
