@@ -1,11 +1,14 @@
+#!/usr/bin/env python
+# coding: utf-8
 
 class ReportView:
     
     def show_report_menu(self):
         print(
             """
-            CREER UN RAPPORT 
-            - lister :
+            MENU DES RAPPORTS
+
+            - Pour lister :
                 '1' les joueurs par ordre alphabétique.
                 '2' les joueurs par classement.
                 '3' tous les joueurs d'un tournoi par ordre alphabetique.
@@ -17,7 +20,3 @@ class ReportView:
             '8' retourner au menu précédent.
             """
         )
-
-    def prompt_report_menu_command(self):
-        user_choice = str(input())
-        return user_choice
