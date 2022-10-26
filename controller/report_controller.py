@@ -3,28 +3,27 @@ class ReportController:
     def __init__(self, view):
         self.report_view = view
 
-    def prompt_menu_command(self):
-        user_choice = str(input())
-        return user_choice
-    
+
     def start_report_menu(self):
         self.report_view.show_report_menu(self)
-        user_choice = self.prompt_menu_command()
-
+        
         while True:
-            if user_choice == '1':
+            user_choice = self.report_view.prompt_menu_command(self)
+            
+            if user_choice == 1:
                 self.all_player_alphabetical(self)
-                self.start_report_menu()
-            elif user_choice == '2':
-                print('2')
-                self.start_report_menu()
-            elif user_choice == '3':
-                print('3')
-                self.start_report_menu()
-            elif user_choice == '4':
+            elif user_choice == 2:
+                print(user_choice)
+            elif user_choice == 3:
+                print(user_choice)
+            elif user_choice == 4:
                 return
             else:
                 print("Commande non valide. Veuillez réessayer.")
+                self.start_report_menu()
+            
+            self.start_report_menu()
+            return
 
     def all_player_alphabetical(self):
         # par ordre alphabétique ;

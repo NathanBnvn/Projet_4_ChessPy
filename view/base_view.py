@@ -2,9 +2,8 @@
 # coding: utf-8
 
 
-class Views:
+class View:
 
-    # add main menu function
     def show_menu_command(self):
         print(
             """
@@ -16,3 +15,7 @@ class Views:
             '4' pour quitter le programme
             """
             )
+
+    def prompt_menu_command(self):
+        user_choice = int(input("Choisissez un menu : "))
+        return user_choice

@@ -1,13 +1,13 @@
 from os import system, name
-from .player import PlayerController
-from .tournament import TournamentController
-from .report import ReportController
-from model.tournament import Tournament
-from model.player import Player
-from view.base import Views
-from view.player import PlayerView
-from view.report import ReportView
-from view.tournament import TournamentView
+from .player_controller import PlayerController
+from .tournament_controller import TournamentController
+from .report_controller import ReportController
+from model.tournament_model import Tournament
+from model.player_model import Player
+from view.base_view import View
+from view.player_view import PlayerView
+from view.report_view import ReportView
+from view.tournament_view import TournamentView
 
 class MainController:
 
@@ -19,7 +19,7 @@ class MainController:
 		self.report_controller = ReportController(ReportView)
 
 		# Instancier la vue
-		self.base_view = Views
+		self.base_view = View
 
 	# définir un fonction pour nettoyer le terminal
 	def clean_terminal(self):
@@ -30,28 +30,24 @@ class MainController:
 			else:
 				_ = system('clear')
 
-	def prompt_menu_command(self):
-		user_choice = str(input())
-		return user_choice
 
 	def start_menu(self):
-		self.clean_terminal()
+		#self.clean_terminal()
 		self.base_view.show_menu_command(self)
-		user_choice = self.prompt_menu_command()
-		self.clean_terminal()
+		user_choice = self.base_view.prompt_menu_command(self)
 
 		while True:
-			if user_choice == '1':
+			if user_choice == 1:
 				self.tournament_controller.start_tournament_menu()
 				self.start_menu()
-			elif user_choice == '2':
+			elif user_choice == 2:
 				self.player_controller.start_player_menu()
 				self.start_menu()
-			elif user_choice == '3':
+			elif user_choice == 3:
 				self.report_controller.start_report_menu()
 				self.start_menu()
-			elif user_choice == '4':
-				print("Merci d'avoir utilisé ChessPy. Au revoir")
+			elif user_choice == 4:
+				print("Merci d'avoir utilisé ChessPy. À bientôt")
 				exit()
 			else:
 				print("Commande non valide. Veuillez réessayer.")

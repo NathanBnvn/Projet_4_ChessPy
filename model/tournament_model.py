@@ -19,3 +19,10 @@ class Tournament:
                 self.player = player
                 self.time_check = time_check
                 self.description = description
+
+                # db = TinyDB('db.json')
+                # tournaments_table = db.table('tournaments')
+                # tournaments_table.truncate()
+
+        def save():
+                pass

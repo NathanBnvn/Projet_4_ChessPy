@@ -20,3 +20,7 @@ class ReportView:
             '8' retourner au menu précédent.
             """
         )
+
+    def prompt_menu_command(self):
+        user_choice = int(input("Choisissez une option : "))
+        return user_choice

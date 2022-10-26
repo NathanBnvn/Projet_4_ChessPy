@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from .match import Match
+from .match_model import Match
 
 class Round:
 	
