@@ -1,10 +1,11 @@
-from os import system, name
 from .player_controller import PlayerController
 from .tournament_controller import TournamentController
 from .report_controller import ReportController
+from .manager_controller import ManagerController
 from model.tournament_model import Tournament
 from model.player_model import Player
 from view.base_view import View
+from view.manager_view import ManagerView
 from view.player_view import PlayerView
 from view.report_view import ReportView
 from view.tournament_view import TournamentView
@@ -20,42 +21,39 @@ class MainController:
 
 		# Instancier la vue
 		self.base_view = View
-
-	# définir un fonction pour nettoyer le terminal
-	def clean_terminal(self):
-		    # pour windows
-			if name == 'nt':
-				_ = system('cls')
-			# pour mac & linux
-			else:
-				_ = system('clear')
+		self.manager_view = ManagerView
+		self.manager_controller = ManagerController
 
 
 	def start_menu(self):
-		#self.clean_terminal()
+		menu_message = "Choisissez un menu : "
+		error_message = "Commande non valide. Veuillez réessayer."
+		
 		self.base_view.show_menu_command(self)
-		user_choice = self.base_view.prompt_menu_command(self)
+		user_choice = self.manager_view.prompt_command(self, menu_message)
+		self.manager_controller.clean_terminal(self)
 
 		while True:
-			if user_choice == 1:
+			if user_choice == '1':
 				self.tournament_controller.start_tournament_menu()
 				self.start_menu()
-			elif user_choice == 2:
+			elif user_choice == '2':
 				self.player_controller.start_player_menu()
 				self.start_menu()
-			elif user_choice == 3:
+			elif user_choice == '3':
 				self.report_controller.start_report_menu()
 				self.start_menu()
-			elif user_choice == 4:
-				print("Merci d'avoir utilisé ChessPy. À bientôt")
+			elif user_choice == '4':
+				self.base_view.quit_program_message(self)
 				exit()
 			else:
-				print("Commande non valide. Veuillez réessayer.")
+				self.manager_view.error_message(self, error_message)
 				self.start_menu()
 
 
+	# @TODO Déplacer la function dans un autre controller
 	def register_result(self):
-		# Sauvegarder le résultat d'un match
+		# Sauvegarder le résultat d'un match 
 		pass
 
 
