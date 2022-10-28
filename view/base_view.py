@@ -16,4 +16,4 @@ class View:
             )
     
     def quit_program_message(self):
-        print("\n Merci d'avoir utilisé ChessPy. À bientôt \n")
+        print("\n Merci d'avoir utilisé ChessPy. À bientôt 👋\n")

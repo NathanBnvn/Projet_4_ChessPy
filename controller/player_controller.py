@@ -9,7 +9,6 @@ class PlayerController:
 		self.player_view = view
 		self.manager_view = ManagerView
 		self.manager_controller = ManagerController
-
 	
 	def start_player_menu(self):
 		self.player_view.show_player_menu(self)

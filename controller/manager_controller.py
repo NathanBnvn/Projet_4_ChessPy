@@ -6,7 +6,6 @@ class ManagerController:
     def __init__(self, view):
         self.manager_view = ManagerView
 
-    # fonction pour nettoyer le terminal
     def clean_terminal(self):
         if name == 'nt':
 		# pour windows
@@ -19,6 +18,7 @@ class ManagerController:
         i = 0
         user_content = []
         wrong_date_format = "Veuillez entrer la date dans un format valide !"
+        wrong_timeline = "Veuillez entrer une date de fin supérieur ou égale à celle du début !"
         invalid_action_message = "Commande non valide. Veuillez réessayer."
         wrong_type = "Veuillez entrer un nombre entier !"
 
@@ -30,15 +30,25 @@ class ManagerController:
                 i += 1
             else:
                 content = self.manager_view.prompt_command(self, input_data)
-                if content == '':
+                if content == 'quit':
+                    # L'utilisateur doit pouvoir quitter le programme à tout moment
+                    break
+                elif content == '':
                     self.manager_view.error_message(self, invalid_action_message)
                 elif "(jj/mm/aaaa)" in input_data:
                     try:
-                        _ = datetime.datetime.strptime(content, "%d/%m/%Y")
-                        user_content.append(content)
-                        i += 1
-					# ajouter une condition pour vérifier que 
-					# la date de fin est après la date de début
+                        date = datetime.datetime.strptime(content, "%d/%m/%Y")
+                        possible_date = user_content[i-1]
+                        
+                        if isinstance(possible_date, datetime.date):
+                            if date >= possible_date:
+                                user_content.append(date)
+                                i += 1
+                            else:
+                                self.manager_view.error_message(self, wrong_timeline)
+                        else:
+                            user_content.append(date)
+                            i += 1
                     except ValueError:
                         self.manager_view.error_message(self, wrong_date_format)
                 elif "nombre" in input_data or "classement" in input_data:
@@ -50,6 +60,5 @@ class ManagerController:
                 else:
                     user_content.append(content)
                     i += 1
-
-		# Utilisateur doit pouvoir quitter la boucle à tout moment
+                
         return user_content
