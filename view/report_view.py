@@ -8,19 +8,19 @@ class ReportView:
             """
             MENU DES RAPPORTS
 
-            - Pour lister :
-                '1' les joueurs par ordre alphabétique.
-                '2' les joueurs par classement.
-                '3' tous les joueurs d'un tournoi par ordre alphabetique.
-                '4' tous les joueurs d'un tournoi par classement.
-                '5' tous les tournois.
-                '6' tous les tours d'un tournoi.
-                '7' tous les matchs d'un tournoi.
+            • Pour lister tous les joueurs :
+                '1' par ordre alphabétique.
+                '2' par classement.
+
+            • Pour lister tous les joueurs d'un tournoi :
+                '3' par ordre alphabetique.
+                '4' par classement.
+            
+            • Pour lister afficher tous :
+                '5' les tournois.
+                '6' les tours d'un tournoi.
+                '7' les matchs d'un tournoi.
 
             '8' retourner au menu précédent.
             """
         )
-    
-    def show_report(self, report):
-        print(report)
-        pass

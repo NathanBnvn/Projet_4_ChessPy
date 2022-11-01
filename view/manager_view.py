@@ -17,5 +17,5 @@ class ManagerView:
         user_selection = answers["selection"]
         return user_selection
     
-    def error_message(self, message):
+    def show_message(self, message):
         print("\n" + message + "\n")

@@ -28,6 +28,7 @@ class MainController:
 	def start_menu(self):
 		menu_message = "Choisissez un menu : "
 		error_message = "Commande non valide. Veuillez réessayer."
+		quit_message = "Merci d'avoir utilisé ChessPy. À bientôt 👋"
 		
 		self.base_view.show_menu_command(self)
 		user_choice = self.manager_view.prompt_command(self, menu_message)
@@ -44,10 +45,10 @@ class MainController:
 				self.report_controller.start_report_menu()
 				self.start_menu()
 			elif user_choice == '4':
-				self.base_view.quit_program_message(self)
+				self.manager_view.show_message(self, quit_message)
 				exit()
 			else:
-				self.manager_view.error_message(self, error_message)
+				self.manager_view.show_message(self, error_message)
 				self.start_menu()
 
 

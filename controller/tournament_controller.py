@@ -1,6 +1,6 @@
-from email import message
 from model.tournament_model import Tournament
 from controller.manager_controller import ManagerController
+from controller.player_controller import PlayerController
 from view.manager_view import ManagerView
 from view.base_view import View
 
@@ -11,6 +11,9 @@ class TournamentController:
 		self.base_view = View
 		self.manager_view = ManagerView
 		self.manager_controller = ManagerController
+		self.player_controller = PlayerController
+
+	# MENU DU TOURNOIS
 	
 	def start_tournament_menu(self):
 		self.tournament_view.show_tournament_menu(self)
@@ -29,16 +32,14 @@ class TournamentController:
 			elif user_choice == '4':
 				return
 			else:
-				self.base_view.error_message(self, error_message)
+				self.base_view.show_message(self, error_message)
 			
 			self.start_tournament_menu()
 			return
-
-	def save():
-		pass
+	
+	# CREER UN TOURNOIS
 
 	def create_tournament(self):
-		# tournament = self.tournament_view.prompt_tournament(self)
 		input_tournament = [
 			"le nom du tournois : ", 
 			"le lieu du tournois : ",
@@ -52,20 +53,20 @@ class TournamentController:
 		choices = ["bullet", "blitz", "coup rapide"]
 
 		tournament = self.manager_controller.check_user_input(self, input_tournament, message, choices)
-		print(tournament)		
-	
-		if not tournament:
-			return
-			tournament = Tournament(
-				tournament[0], 
-				tournament[1], 
-				tournament[2], 
-				tournament[3], 
-				tournament[4], 
-				tournament[5], 
-				tournament[6], 
-			)
-	
+		tournament_players = self.player_controller.add_player_to_tournament(self)
+		sucessfully_created_message = "Votre tournois a bien été sauvegardé."
+		print(tournament)
+		print(tournament_players)
+		if tournament:
+			if len(tournament) < len(input_tournament):
+				while len(tournament) < len(input_tournament):
+					tournament.append(None)
+			self.tournament_model.save(self, tournament)
+			self.manager_view.show_message(self, sucessfully_created_message)
+
+
+	# METTRE A UN TOURNOIS
+
 	def update_tournament(self):
 		pass
 
