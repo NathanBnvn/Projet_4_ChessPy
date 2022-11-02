@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 from view.manager_view import ManagerView
 from os import system, name
 import datetime
@@ -69,3 +72,12 @@ class ManagerController:
                     i += 1
                 
         return user_content
+
+
+        def set_table_format(self, datas):
+            #table = Table(show_header=True, header_style='bold')
+            # for value in datas.values():
+			# table.add_column(value)
+            # #table.add_row("Morty", "Plumbus")
+            # self.manager_view.show_table(self, table)
+            pass

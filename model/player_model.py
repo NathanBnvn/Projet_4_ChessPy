@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from unicodedata import category
 from tinydb import TinyDB, Query
 
 class Player:
         db = TinyDB('db.json', sort_keys=True, indent=4, separators=(',', ': '))
         player_table = db.table('players')
+        player_query = Query()
 
         def __init__(self, last_name, first_name, birth_date, gender, ranking):
                 self.last_name = last_name
@@ -36,19 +38,23 @@ class Player:
                 serialized_player = self.player_model.serializer(self, player)
                 self.player_model.player_table.insert(serialized_player)
         
-        def update(self, player):
-                self.player_model.player_table.update()
-                pass
+        def update(self, category, new_value, player_id):
+                updated_player = self.player_model.player_table.update(
+                        {category: new_value}, 
+                        doc_ids = [player_id]
+                        )
+                return updated_player
+
+        def get(self, player_id):
+                player = self.player_model.player_table.get(doc_id=player_id)
+                return player
 
         def get_all(self):
-                registered_player = self.player_model.player_table.all()
-                return registered_player
+                saved_players = self.player_model.player_table.all()
+                return saved_players
         
         def get_ranked_player(self):
-                player_query = Query()
-                ranked_player = self.player_model.player_table.search(player_query.ranking != None)
+                ranked_player = self.player_model.player_table.search(
+                        self.player_model.player_query.ranking != None
+                        )
                 return ranked_player
-
-        def get(self, player_name):
-                self.player_model.player_table.get()
-                pass

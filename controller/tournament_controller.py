@@ -1,4 +1,6 @@
-from model.tournament_model import Tournament
+#!/usr/bin/env python
+# coding: utf-8
+
 from controller.manager_controller import ManagerController
 from controller.player_controller import PlayerController
 from view.manager_view import ManagerView
@@ -28,8 +30,6 @@ class TournamentController:
 			elif user_choice == '2':
 				print(user_choice)
 			elif user_choice == '3':
-				print(user_choice)
-			elif user_choice == '4':
 				return
 			else:
 				self.base_view.show_message(self, error_message)
@@ -65,11 +65,7 @@ class TournamentController:
 			self.manager_view.show_message(self, sucessfully_created_message)
 
 
-	# METTRE A UN TOURNOIS
+	# METTRE A JOUR UN TOURNOIS
 
 	def update_tournament(self):
-		pass
-
-	def finish_tournament(self):
-		# Fin du tournois
 		pass

@@ -12,6 +12,6 @@ class TournamentView:
 
             '1' pour créer un tournois
             '2' pour mettre à jour un tournois
-            '4' pour retourner au menu principal
+            '3' pour retourner au menu principal
             """
         )

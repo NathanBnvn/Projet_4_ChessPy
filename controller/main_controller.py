@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 from .player_controller import PlayerController
 from .tournament_controller import TournamentController
 from .report_controller import ReportController
@@ -13,8 +16,6 @@ from view.tournament_view import TournamentView
 class MainController:
 
 	def __init__(self):
-		# self.match = match
-		# self.round = round
 		self.player_controller = PlayerController(Player, PlayerView)
 		self.tournament_controller = TournamentController(Tournament, TournamentView)
 		self.report_controller = ReportController(ReportView)

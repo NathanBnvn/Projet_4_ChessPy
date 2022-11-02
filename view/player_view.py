@@ -10,6 +10,6 @@ class PlayerView:
 
             '1' pour créer un joueur
             '2' pour mettre à jour un joueur
-            '4' pour retourner au menu principal
+            '3' pour retourner au menu principal
             """
             )

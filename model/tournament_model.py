@@ -53,5 +53,5 @@ class Tournament:
                 pass
 
         def get_all(self):
-                registered_tournament = self.tournament_model.player_table.all()
+                registered_tournament = self.tournament_model.tournament_table.all()
                 return registered_tournament

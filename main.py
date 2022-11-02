@@ -1,9 +1,6 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-from view.player_view import PlayerView
-from view.tournament_view import TournamentView
-
 from controller.main_controller import MainController 
 
 def main():
