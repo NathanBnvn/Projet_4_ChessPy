@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from turtle import update
 from controller.manager_controller import ManagerController
 from view.manager_view import ManagerView
-from rich.table import Table
+
 
 class PlayerController:
 	def __init__(self, model, view):
@@ -32,6 +31,7 @@ class PlayerController:
 			
 			self.start_player_menu()
 			return
+
 
 	def create_player(self):
 		input_player = [
@@ -75,29 +75,6 @@ class PlayerController:
 
 
 	def update_player(self):
-		select_id = "Veuillez sélectionner l'ID du joueur que vous souhaitez mettre à jour : "
-		select_category = "Quelle propriété souhaitez vous éditer ?"
-		value_message = "Veuillez entrer la nouvelle valeur : "
-		success_message = "Le joueur/la joueuse a bien été mis à jour"
-		cannot_save_message = "Les données n'ont pas pu être enregistrées"
-		categories = []
-		players = self.player_model.get_all(self)
-		# @TODO implement view function
-		print(players)
-		selected_id = self.manager_view.prompt_command(self, select_id)
-		if selected_id.isdigit():
-			player_id = int(selected_id)
-		else:
-			self.manager_view.show_message(self, self.error_message)
-		player = self.player_model.get(self, player_id)
-		# @TODO implement view function
-		print(player)
-		for key in player:
-			categories.append(key)
-		category = self.manager_view.select_command(self, select_category, categories)
-		new_value = self.manager_view.prompt_command(self, value_message)
-		update_player = self.player_model.update(self, category, new_value, player_id)
-		if player_id in update_player:
-			self.manager_view.show_message(self, success_message)
-		else:
-			self.manager_view.show_message(self, cannot_save_message)
+		players = self.player_model
+		self.manager_controller.update_process(self, players)
+

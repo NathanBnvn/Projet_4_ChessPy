@@ -2,6 +2,7 @@
 # coding: utf-8
 
 from view.manager_view import ManagerView
+from rich.table import Table
 from os import system, name
 import datetime
 
@@ -16,6 +17,7 @@ class ManagerController:
         else:
         # pour mac & linux
             _ = system('clear')
+
 
     def check_user_input(self, input_category, message, choices):
         i = 0
@@ -74,10 +76,71 @@ class ManagerController:
         return user_content
 
 
-        def set_table_format(self, datas):
-            #table = Table(show_header=True, header_style='bold')
-            # for value in datas.values():
-			# table.add_column(value)
-            # #table.add_row("Morty", "Plumbus")
-            # self.manager_view.show_table(self, table)
-            pass
+    def update_process(self, data_model):
+        success_message = "La donnée a bien été mis à jour"
+        select_category = "Quelle propriété souhaitez vous éditer ?"
+        value_message = "Veuillez entrer la nouvelle valeur : "
+        cannot_save_message = "Les données n'ont pas pu être enregistrées"
+        no_data_message = "Aucune donnée existante"
+        quit_message = "Vous venez d'interrompre votre mise à jour"
+        categories = []
+
+        elements = data_model.get_all(self)
+        if len(elements) > 0:
+            # @TODO implement view function
+            # self.manager_controller.set_table_format(self)
+            print(elements)
+
+            element_id = self.manager_controller.check_id_input(self, len(elements))
+            if element_id:
+                element = data_model.get(self, element_id)
+                # @TODO implement view function
+                # self.manager_controller.set_table_format(self)
+                print(element)
+                
+                for key in element:
+                    categories.append(key)
+                category = self.manager_view.select_command(self, select_category, categories)
+                new_value = self.manager_view.prompt_command(self, value_message)
+                if new_value == "quit":
+                    self.manager_view.show_message(self, quit_message)
+                    return
+                else:
+                    update_element = data_model.update(self, category, new_value, element_id)
+                    if element_id in update_element:
+                        self.manager_view.show_message(self, success_message)
+                    else:
+                        self.manager_view.show_message(self, cannot_save_message)
+            else:
+                self.manager_view.show_message(self, quit_message)
+        else:
+            self.manager_view.show_message(self, no_data_message)
+
+
+    def check_id_input(self, instances_count):
+        select_id = "Veuillez sélectionner l'ID de l'instance que vous souhaitez mettre à jour : "
+        id_not_found = "L'ID entré ne correspond à rien. Veuillez réessayer."
+
+        while True:
+            selected_id = self.manager_view.prompt_command(self, select_id)
+            if selected_id == "quit":
+                return
+            elif selected_id.isdigit():
+                element_id = int(selected_id)
+                if element_id <= instances_count:
+                    return element_id
+                else:
+                    self.manager_view.show_message(self, id_not_found)    
+            else:
+                self.manager_view.show_message(self, self.error_message)
+
+
+    def set_table_format(self):
+        t = ("Test", "Casual", "Novel")
+        n = ("Personne", "Paul", "10/09/1990")
+        table = Table(*t)
+        # for value in datas.values():
+		# table.add_column(value)
+        table.add_row(*n)
+        #table.add_row("Morty", "Plumbus")
+        self.manager_view.show_table(self, table)

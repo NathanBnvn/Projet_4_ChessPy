@@ -8,7 +8,7 @@ from view.base_view import View
 
 class TournamentController:
 	def __init__(self, model, view):
-		self.tournament = model
+		self.tournament_model = model
 		self.tournament_view = view
 		self.base_view = View
 		self.manager_view = ManagerView
@@ -28,7 +28,7 @@ class TournamentController:
 			if user_choice == '1':
 				self.create_tournament()
 			elif user_choice == '2':
-				print(user_choice)
+				self.update_tournament()
 			elif user_choice == '3':
 				return
 			else:
@@ -68,4 +68,5 @@ class TournamentController:
 	# METTRE A JOUR UN TOURNOIS
 
 	def update_tournament(self):
-		pass
+		tournaments = self.tournament_model
+		self.manager_controller.update_process(self, tournaments)
