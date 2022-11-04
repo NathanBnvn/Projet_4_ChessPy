@@ -8,7 +8,7 @@ from collections import UserList
 # from .player import Player
 
 class Tournament:
-        db = TinyDB('db.json', sort_keys=True, indent=4, separators=(',', ': '))
+        db = TinyDB('db.json', sort_keys=False, indent=4, separators=(',', ': '))
         tournament_table = db.table('tournaments')
 
         def __init__(self, name, place, start_date, end_date, round_count, rounds, players, time_control, description):
@@ -24,6 +24,17 @@ class Tournament:
 
 
         def serializer(self, tournament):
+                tournament = Tournament(
+                        name=tournament[0],
+                        place=tournament[1],
+                        start_date=tournament[2],
+                        end_date=tournament[3],
+                        round_count=tournament[4],
+                        rounds=tournament[5],
+                        players=tournament[6],
+                        time_control=tournament[7],
+                        description=tournament[8]
+                )
                 serialized_tournament = {
                         'name': tournament.name,
                         'place': tournament.place,
@@ -39,18 +50,22 @@ class Tournament:
 
 
         def save(self, tournament):
-                serialized_tournament = self.serializer(tournament)
-                self.tournament_table.insert(serialized_tournament)
+                serialized_tournament = self.tournament_model.serializer(self, tournament)
+                self.tournament_model.tournament_table.insert(serialized_tournament)
 
 
-        def update(self, tournament):
-                self.tournament_table.update()
-                pass
+        def update(self, category, new_value, tournament_id):
+                updated_tournament = self.tournament_model.tournament_table.update(
+                        {category: new_value}, 
+                        doc_ids = [tournament_id]
+                        )
+                return updated_tournament
 
 
-        def get(self, tournament_name):
-                self.tournament_table.get()
-                pass
+        def get(self, tournament_id):
+                tournament = self.tournament_model.tournament_table.get(doc_id=tournament_id)
+                return tournament
+
 
         def get_all(self):
                 registered_tournament = self.tournament_model.tournament_table.all()

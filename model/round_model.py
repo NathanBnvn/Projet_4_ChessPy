@@ -5,7 +5,7 @@ from tinydb import TinyDB, Query
 from .match_model import Match
 
 class Round:
-	db = TinyDB('db.json', sort_keys=True, indent=4, separators=(',', ': '))
+	db = TinyDB('db.json', sort_keys=False, indent=4, separators=(',', ': '))
 	round_table = db.table('rounds')
 
 	def __init__(self, name, match, start_time, end_time):

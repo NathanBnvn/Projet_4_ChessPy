@@ -81,7 +81,7 @@ class ManagerController:
         select_category = "Quelle propriété souhaitez vous éditer ?"
         value_message = "Veuillez entrer la nouvelle valeur : "
         cannot_save_message = "Les données n'ont pas pu être enregistrées"
-        no_data_message = "Aucune donnée existante"
+        no_data_message = "Aucune donnée existante. Veuillez en ajouter"
         quit_message = "Vous venez d'interrompre votre mise à jour"
         categories = []
 

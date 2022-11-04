@@ -57,10 +57,13 @@ class TournamentController:
 		sucessfully_created_message = "Votre tournois a bien été sauvegardé."
 		print(tournament)
 		print(tournament_players)
+		tournament_property_count = len(input_tournament) + 2
 		if tournament:
-			if len(tournament) < len(input_tournament):
-				while len(tournament) < len(input_tournament):
+			if len(tournament) < tournament_property_count:
+				while len(tournament) < tournament_property_count:
 					tournament.append(None)
+			if tournament_players:
+					tournament.insert(6, tournament_players)
 			self.tournament_model.save(self, tournament)
 			self.manager_view.show_message(self, sucessfully_created_message)
 
