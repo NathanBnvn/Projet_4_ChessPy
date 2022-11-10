@@ -52,12 +52,5 @@ class MainController:
 				self.manager_view.show_message(self, error_message)
 				self.start_menu()
 
-
-	# @TODO Déplacer la function dans un autre controller
-	def register_result(self):
-		# Sauvegarder le résultat d'un match 
-		pass
-
-
 	def run(self):
 		self.start_menu()

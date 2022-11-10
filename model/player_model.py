@@ -4,7 +4,7 @@
 from tinydb import TinyDB, Query
 
 class Player:
-        db = TinyDB('db.json', sort_keys=False, indent=4, separators=(',', ': '))
+        db = TinyDB('db.json', indent=4, separators=(',', ': '))
         player_table = db.table('players')
         player_query = Query()
 

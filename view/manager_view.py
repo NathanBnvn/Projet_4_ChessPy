@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import inquirer
-from rich import print as rprint
+from rich import print_json
 
 class ManagerView:
     def prompt_command(self, input_name):
@@ -27,5 +27,5 @@ class ManagerView:
         print("\n" + message + "\n")
 
 
-    def show_table(self, table):
-        rprint(table)
+    def show_json(self, data):
+        print_json(data=data)

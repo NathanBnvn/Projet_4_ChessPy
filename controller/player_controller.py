@@ -59,19 +59,32 @@ class PlayerController:
 
 	def add_player_to_tournament(self):
 		tournament_players = []
-		max_player_count = 7
-		player_count = 0
+		max_player_count = 8
+		player_count = 1
 		add_player_message = "Souhaitez-vous ajouter 8 joueurs aux tournois ? (oui/non) : "
 		add_player_response = self.manager_view.prompt_command(self, add_player_message)
 		if add_player_response == "oui":
-			while player_count <= max_player_count:
-				tournament_player = self.player_controller.create_player(self)
-				tournament_players.append(tournament_player)
-				player_count += 1
+			create_or_add_message = "Souhaitez-vous créer des joueurs ou en ajouter déjà existant ? (créer/ajouter) : "
+			create_or_add_response = self.manager_view.prompt_command(self, create_or_add_message)
+			if create_or_add_response == "créer" or create_or_add_response == "creer":
+				while player_count <= max_player_count:
+					tournament_player = self.player_controller.create_player(self)
+					tournament_players.append(tournament_player)
+					player_count += 1
+				return tournament_players
+			elif create_or_add_response == "ajouter":
+				# @TODO add existing player function
+				print('add existing player')
+			else:
+				self.manager_view.show_message(self, self.error_message)
+		elif add_player_response == "non":
+			return
+		else:
+			self.manager_view.show_message(self, self.error_message)
+	
 			# Les joueurs dans la table tournois correspondent 
 			# à la liste des indices
 			# des instances du joueur stockées en mémoire.
-			return tournament_players
 
 
 	def update_player(self):

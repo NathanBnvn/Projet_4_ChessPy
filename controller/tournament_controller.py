@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from model.match_model import Match
 from controller.manager_controller import ManagerController
 from controller.player_controller import PlayerController
 from view.manager_view import ManagerView
@@ -14,6 +15,7 @@ class TournamentController:
 		self.manager_view = ManagerView
 		self.manager_controller = ManagerController
 		self.player_controller = PlayerController
+		self.match_model = Match
 
 	# MENU DU TOURNOIS
 	
@@ -53,17 +55,17 @@ class TournamentController:
 		choices = ["bullet", "blitz", "coup rapide"]
 
 		tournament = self.manager_controller.check_user_input(self, input_tournament, message, choices)
-		tournament_players = self.player_controller.add_player_to_tournament(self)
+		
 		sucessfully_created_message = "Votre tournois a bien été sauvegardé."
-		print(tournament)
-		print(tournament_players)
 		tournament_property_count = len(input_tournament) + 2
+		players_index = 6
 		if tournament:
+			tournament_players = self.player_controller.add_player_to_tournament(self)
 			if len(tournament) < tournament_property_count:
 				while len(tournament) < tournament_property_count:
 					tournament.append(None)
 			if tournament_players:
-					tournament.insert(6, tournament_players)
+					tournament.insert(players_index, tournament_players)
 			self.tournament_model.save(self, tournament)
 			self.manager_view.show_message(self, sucessfully_created_message)
 
@@ -73,3 +75,30 @@ class TournamentController:
 	def update_tournament(self):
 		tournaments = self.tournament_model
 		self.manager_controller.update_process(self, tournaments)
+
+
+	# ALGORITHME DE TRI POUR SYSTEME DE TOURNOIS SUISSE
+
+	def pairing(self, players):
+		# Triez tous les joueurs en fonction de leur classement
+		ranked_list = sorted(players, key=lambda x: x['ranking'], reverse=False)
+		
+		# Divisez les joueurs en deux moitiés, une supérieure et une inférieure.
+		high_ranked = ranked_list[:len(ranked_list)//2]
+		low_ranked = ranked_list[len(ranked_list)//2:]
+		
+		# Le meilleur joueur de la moitié supérieure est jumelé avec le meilleur joueur
+		# de la moitié inférieure, et ainsi de suite
+		x = 0
+		y = 3
+		while x < y:
+			m = ([high_ranked[x], None], [low_ranked[x], None])
+			self.match_model.serializer(self, m)
+			x += 1
+			pass
+			
+		self.register_result()
+
+
+	def register_result(self):
+		pass

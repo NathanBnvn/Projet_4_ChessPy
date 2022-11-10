@@ -8,7 +8,7 @@ from collections import UserList
 # from .player import Player
 
 class Tournament:
-        db = TinyDB('db.json', sort_keys=False, indent=4, separators=(',', ': '))
+        db = TinyDB('db.json', indent=4, separators=(',', ': '))
         tournament_table = db.table('tournaments')
 
         def __init__(self, name, place, start_date, end_date, round_count, rounds, players, time_control, description):
