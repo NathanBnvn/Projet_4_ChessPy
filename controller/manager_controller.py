@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from view.manager_view import ManagerView
 from os import system, name
+from model.tournament_model import Tournament
+from model.player_model import Player
 import datetime
 
 class ManagerController:
     def __init__(self, view):
-        self.manager_view = ManagerView
+        self.manager_view = view
+        self.tournament_model = Tournament
+        self.player_model = Player
 
     def clean_terminal(self):
         if name == 'nt':
@@ -21,6 +24,7 @@ class ManagerController:
     def check_user_input(self, input_category, message, choices):
         i = 0
         user_content = []
+        previous_date = []
         wrong_date_format = "Veuillez entrer la date dans un format valide !"
         wrong_timeline = "Veuillez entrer une date de fin supérieur ou égale à celle du début !"
         wrong_type = "Veuillez entrer un nombre entier !"
@@ -38,23 +42,25 @@ class ManagerController:
                 content = self.manager_view.prompt_command(self, input_data)
                 if content == 'quit':
                     # L'utilisateur doit pouvoir quitter le programme à tout moment
-                    self.manager_view.show_message(self, quit_message)                    
+                    self.manager_view.show_message(self, quit_message)
+                    #if user_content:
+                        #user_content.append(None)                    
                     break
-                elif content == '':
+                elif content.isspace():
                     self.manager_view.show_message(self, invalid_action_message)
                 
                 elif "(jj/mm/aaaa)" in input_data:
                     try:
                         date = datetime.datetime.strptime(content, "%d/%m/%Y")
-                        possible_date = user_content[i-1]
-                        if isinstance(possible_date, datetime.date):
-                            if date >= possible_date:
-                                user_content.append(date.strftime('%d/%m/%Y'))
+                        if previous_date:
+                            if date >= previous_date[0]:
+                                user_content.append(content)
                                 i += 1
                             else:
                                 self.manager_view.show_message(self, wrong_timeline)
                         else:
-                            user_content.append(date.strftime('%d/%m/%Y'))
+                            user_content.append(content)
+                            previous_date.append(date)
                             i += 1
                     except ValueError:
                         self.manager_view.show_message(self, wrong_date_format)
@@ -71,7 +77,6 @@ class ManagerController:
                 else:
                     user_content.append(content)
                     i += 1
-                
         return user_content
 
 
@@ -89,7 +94,7 @@ class ManagerController:
         if len(elements) > 0:
             self.manager_view.show_json(self, elements)
 
-            element_id = self.manager_controller.check_id_input(self, len(elements))
+            element_id = self.check_id_input(len(elements))
             if element_id:
                 element = data_model.get(self, element_id)
                 self.manager_view.show_json(self, element)
@@ -148,7 +153,7 @@ class ManagerController:
                 return
             elif selected_id.isdigit():
                 element_id = int(selected_id)
-                if element_id <= instances_count:
+                if element_id <= instances_count and element_id != 0:
                     return element_id
                 else:
                     self.manager_view.show_message(self, id_not_found)    

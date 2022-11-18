@@ -11,9 +11,9 @@ class ReportController:
 
     def __init__(self, view):
         self.report_view = view
-        self.base_view = View
-        self.manager_view = ManagerView
-        self.manager_controller = ManagerController
+        self.base_view = View()
+        self.manager_view = ManagerView()
+        self.manager_controller = ManagerController(ManagerView)
         self.player_model = Player
         self.tournament_model = Tournament
 
@@ -26,7 +26,7 @@ class ReportController:
         error_message = "Commande non valide. Veuillez réessayer."
         
         while True:
-            user_choice = self.manager_view.prompt_command(self, menu_message)
+            user_choice = self.manager_view.prompt_command(menu_message)
             
             if user_choice == '1':
                 self.all_player_alphabetical()
@@ -41,15 +41,15 @@ class ReportController:
             elif user_choice == '5':
                 self.all_tournament()
             elif user_choice == '6':
-                self.tournament_rounds()
+                self.tournament_rounds(user_choice)
                 print(user_choice)
             elif user_choice == '7':
-                self.tournament_matches()
+                self.tournament_matches(user_choice)
                 print(user_choice)
             elif user_choice == '8':
                 return
             else:
-                self.manager_view.show_message(self, error_message)
+                self.manager_view.show_message(error_message)
             
             self.start_report_menu()
             return
@@ -61,7 +61,7 @@ class ReportController:
         data = self.player_model.get_all(self)
         players = self.check_data_exist(data)  
         alphabetical_list = sorted(players, key=lambda x: x['last_name'], reverse=False)
-        self.manager_view.show_json(self, alphabetical_list)
+        self.manager_view.show_json(alphabetical_list)
         self.return_to_menu()
 
 
@@ -71,14 +71,14 @@ class ReportController:
         data = self.player_model.get_ranked_player(self)
         players = self.check_data_exist(data)       
         ranked_list = sorted(players, key=lambda x: x['ranking'], reverse=False)
-        self.manager_view.show_json(self, ranked_list)
+        self.manager_view.show_json(ranked_list)
         self.return_to_menu()
 
 
     def list_tournaments(self):
         data = self.tournament_model.get_all(self)
         tournaments = self.check_data_exist(data)
-        self.manager_view.show_json(self, tournaments)
+        self.manager_view.show_json(tournaments)
         return tournaments
 
 
@@ -86,7 +86,7 @@ class ReportController:
 
     def tournament_players_alphabetical(self):
         tournaments = self.list_tournaments()
-        tournament_id = self.manager_controller.check_id_input(self, len(tournaments))
+        tournament_id = self.manager_controller.check_id_input(len(tournaments))
         if tournament_id:
             tournament = self.tournament_model.get(self, tournament_id)
             selected_tournament = self.check_data_exist(tournament)
@@ -94,7 +94,7 @@ class ReportController:
             selected_players = self.check_data_exist(players)
             if selected_players:
                 alphabetical_list = sorted(selected_players, key=lambda x: x['last_name'], reverse=False)
-                self.manager_view.show_json(self, alphabetical_list)
+                self.manager_view.show_json(alphabetical_list)
         self.return_to_menu()
 
 
@@ -102,7 +102,7 @@ class ReportController:
 
     def tournament_players_by_ranks(self):
         tournaments = self.list_tournaments()
-        tournament_id = self.manager_controller.check_id_input(self, len(tournaments))
+        tournament_id = self.manager_controller.check_id_input(len(tournaments))
         if tournament_id:
             tournament = self.tournament_model.get(self, tournament_id)
             selected_tournament = self.check_data_exist(tournament)
@@ -123,9 +123,9 @@ class ReportController:
 
     # L'ensemble des rounds d'un tournois
 
-    def tournament_rounds(self):
+    def tournament_rounds(self, user_choice):
         tournaments = self.list_tournaments()
-        tournament_id = self.manager_controller.check_id_input(self, len(tournaments))
+        tournament_id = self.manager_controller.check_id_input(len(tournaments))
         if tournament_id:
             tournament = self.tournament_model.get(self, tournament_id)
             selected_tournament = self.check_data_exist(tournament)
@@ -133,24 +133,18 @@ class ReportController:
             selected_rounds = self.check_data_exist(rounds)
             if selected_rounds:
                 ranked_list = sorted(selected_rounds, key=lambda x: x['ranking'], reverse=False)
-                self.manager_view.show_json(self, ranked_list)
+                self.manager_view.show_json(ranked_list)
+                
+                # L'ensemble des matchs d'un tournois
+                if user_choice == 7:
+                    print('matches... ')
         self.return_to_menu()
-
-
-    # L'ensemble des matchs d'un tournois
-
-    def tournament_matches(self):
-        self.list_tournaments()
-        #self.manager_view.show_json(self, ranked_players)
-        self.return_to_menu()
-        pass
-
 
     def check_data_exist(self, data):
         no_data_message = "Il n'y a pas de données pour le moment"
         
         if not data or data == None:
-            self.manager_view.show_message(self, no_data_message)
+            self.manager_view.show_message(no_data_message)
         else:
             return data
 
@@ -159,7 +153,7 @@ class ReportController:
         return_message = "Tapez sur une touche pour retourner au menu : "
         
         while True:
-            back_to_menu = self.manager_view.prompt_command(self, return_message)
+            back_to_menu = self.manager_view.prompt_command(return_message)
             
             if back_to_menu:
                 break

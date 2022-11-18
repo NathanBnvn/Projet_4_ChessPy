@@ -2,10 +2,6 @@
 # coding: utf-8
 
 from tinydb import TinyDB, Query
-from collections import UserList
-# from .match import Match
-# from .round import Round
-# from .player import Player
 
 class Tournament:
         db = TinyDB('db.json', indent=4, separators=(',', ': '))
@@ -21,7 +17,6 @@ class Tournament:
                 self.players = players
                 self.time_control = time_control
                 self.description = description
-
 
         def serializer(self, tournament):
                 tournament = Tournament(
