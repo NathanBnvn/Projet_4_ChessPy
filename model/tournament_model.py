@@ -7,7 +7,7 @@ class Tournament:
         db = TinyDB('db.json', indent=4, separators=(',', ': '))
         tournament_table = db.table('tournaments')
 
-        def __init__(self, name, place, start_date, end_date, round_count, rounds, players, time_control, description):
+        def __init__(self, name, place, start_date, end_date, round_count, rounds, players, time_control, description, in_process):
                 self.name = name
                 self.place = place
                 self.start_date = start_date
@@ -17,6 +17,7 @@ class Tournament:
                 self.players = players
                 self.time_control = time_control
                 self.description = description
+                self.in_process: bool = in_process
 
         def serializer(self, tournament):
                 tournament = Tournament(

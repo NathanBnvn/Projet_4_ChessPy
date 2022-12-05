@@ -3,6 +3,7 @@
 
 from tinydb import TinyDB, Query
 from .match_model import Match
+import datetime
 
 class Round:
 	db = TinyDB('db.json', indent=4, separators=(',', ': '))
@@ -13,3 +14,11 @@ class Round:
 		self.match = match
 		self.start_time = start_time
 		self.end_time = end_time
+	
+	def serializer(self, round):
+		round = Round(
+			name=round[0],
+			match=round[1],
+			start_time=datetime.datetime.now(),
+			end_time=round[2]
+		)
