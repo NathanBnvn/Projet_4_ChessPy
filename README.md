@@ -8,7 +8,8 @@ _Photo by Felix Mittermeier on Unsplash_
 ### Introduction
 ChessPy is a chess tournament management program. 
 With this project, you can create tournament, players and generate reports of registered tournaments, rounds, matchs and players
-This project has been realised with python, according to the MVC structure and tinyDB.
+This project has been realised with python, according to the MVC structure and tinyDB. 
+This program works in the terminal
 
 
 ### Download
@@ -18,6 +19,7 @@ Download the project from github
   git clone https://github.com/NathanBnvn/Projet_4_ChessPy.git
 
 ```
+
 
 ### Setup
 
@@ -66,6 +68,8 @@ To launch the program :
 $ python main.py
 
 ```
+
+Then you can follow the different instructions in the menus
 
 During an action, you can interrupt the process by typing in prompt command: 
 
