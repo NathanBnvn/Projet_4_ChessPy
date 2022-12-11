@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
-
 class TournamentView:
-    
+
     def show_tournament_menu(self):
         print(
             """

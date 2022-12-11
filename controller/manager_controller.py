@@ -6,6 +6,7 @@ from model.tournament_model import Tournament
 from model.player_model import Player
 import datetime
 
+
 class ManagerController:
     def __init__(self, view):
         self.manager_view = view
@@ -14,10 +15,10 @@ class ManagerController:
 
     def clean_terminal(self):
         if name == 'nt':
-		# pour windows
+            # pour windows
             _ = system('cls')
         else:
-        # pour mac & linux
+            # pour mac & linux
             _ = system('clear')
 
 
@@ -48,7 +49,6 @@ class ManagerController:
                     break
                 elif content.isspace():
                     self.manager_view.show_message(self, invalid_action_message)
-                
                 elif "(jj/mm/aaaa)" in input_data:
                     try:
                         date = datetime.datetime.strptime(content, "%d/%m/%Y")
@@ -64,7 +64,6 @@ class ManagerController:
                             i += 1
                     except ValueError:
                         self.manager_view.show_message(self, wrong_date_format)
-                
                 elif "nombre" in input_data or "classement" in input_data:
                     if content.isdigit():
                         if int(content) > 0:
@@ -72,7 +71,7 @@ class ManagerController:
                             i += 1
                         else:
                             self.manager_view.show_message(self, negative_number)
-                    else :
+                    else:
                         self.manager_view.show_message(self, wrong_type)
                 else:
                     user_content.append(content)
@@ -98,7 +97,7 @@ class ManagerController:
             if element_id:
                 element = data_model.get(self, element_id)
                 self.manager_view.show_json(self, element)
-                
+
                 for key in element:
                     categories.append(key)
                 category = self.manager_view.select_command(self, select_category, categories)
@@ -116,10 +115,10 @@ class ManagerController:
                     elif 'date' in new_value:
                         # @TODO VERIFIER LE FORMAT DE LA DATE
                         print("checking date format...")
-    
+
                         #try:
-                        #    date = datetime.datetime.strptime(new_value, "%d/%m/%Y")
-                            # possible_date = 
+                        #   date = datetime.datetime.strptime(new_value, "%d/%m/%Y")
+                        #   possible_date = 
                         #     if isinstance(possible_date, datetime.date):
                         #         if date >= possible_date:
                         #           update_element = data_model.update(self, category, new_value, element_id)

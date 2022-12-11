@@ -2,7 +2,7 @@
 # coding: utf-8
 
 class ReportView:
-    
+
     def show_report_menu(self):
         print(
             """
@@ -15,7 +15,7 @@ class ReportView:
             • Pour lister tous les joueurs d'un tournoi :
                 '3' par ordre alphabetique.
                 '4' par classement.
-            
+
             • Pour lister afficher tous :
                 '5' les tournois.
                 '6' les tours d'un tournoi.

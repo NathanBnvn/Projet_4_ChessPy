@@ -13,8 +13,8 @@ from view.player_view import PlayerView
 from view.report_view import ReportView
 from view.tournament_view import TournamentView
 
-class MainController:
 
+class MainController:
 	def __init__(self):
 		self.player_controller = PlayerController(Player, PlayerView)
 		self.tournament_controller = TournamentController(Tournament, TournamentView)

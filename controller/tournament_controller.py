@@ -11,6 +11,7 @@ from view.base_view import View
 from view.player_view import PlayerView
 import datetime
 
+
 class TournamentController:
 	def __init__(self, model, view):
 		self.tournament_model = model
@@ -51,6 +52,7 @@ class TournamentController:
 	# LANCER LES ÉTAPES DE LA CREATION D'UN TOURNOIS
 
 	def launch_tournament_flow(self):
+
 		tournament = self.create_tournament()
 		if tournament:
 			pair_message = "Souhaitez-vous générer des paires pour les matchs ? (o/n): "
@@ -67,6 +69,7 @@ class TournamentController:
 	# CREER UN TOURNOIS
 
 	def create_tournament(self):
+
 		input_tournament = [
 			"le nom du tournois : ", 
 			"le lieu du tournois : ",
@@ -108,6 +111,7 @@ class TournamentController:
 	# METTRE A JOUR UN TOURNOIS
 
 	def update_tournament(self):
+
 		tournaments = self.tournament_model
 		self.manager_controller.update_process(tournaments)
 
@@ -115,6 +119,7 @@ class TournamentController:
 	# ALGORITHME DE TRI POUR SYSTEME DE TOURNOIS SUISSE
 
 	def pairing(self):
+
 		self.round_counter = 1
 		round_count = "Round " + str(self.round_counter)
 		round_message = """
@@ -232,7 +237,7 @@ class TournamentController:
 			print('STOP ALREADY THERE')
 			new_list = score_list
 			new_index = index_player_two + 2
-			if new_index == 7:
+			if new_index >= 7:
 				new_index - 8
 			new_list.insert(new_index, score_list[index_player_two])
 			new_list.pop(index_player_two)
