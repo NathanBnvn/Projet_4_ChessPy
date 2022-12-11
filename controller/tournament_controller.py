@@ -2,12 +2,14 @@
 # coding: utf-8
 
 from model.match_model import Match
+from model.round_model import Round
 from model.player_model import Player
 from controller.manager_controller import ManagerController
 from controller.player_controller import PlayerController
 from view.manager_view import ManagerView
 from view.base_view import View
 from view.player_view import PlayerView
+import datetime
 
 class TournamentController:
 	def __init__(self, model, view):
@@ -18,6 +20,7 @@ class TournamentController:
 		self.manager_controller = ManagerController(ManagerView)
 		self.player_controller = PlayerController(Player, PlayerView)
 		self.match_model = Match
+		self.round_model = Round
 		self.error_message = "Commande non valide. Veuillez réessayer."
 		self.round_counter = 1
 
@@ -133,16 +136,7 @@ class TournamentController:
 			#round_model
 			
 		if score_base_list:
-
-		
-		#match_count = 0
-		#player_count = 0
-		#print(len(pairs))
-		#print(pairs[match][player])
-		#print(pairs[match][player][1]['score_player'])
-
 			self.create_round(score_base_list, existing_pairs)
-
 
 
 	def create_first_round(self, players, existing_pairs):
@@ -159,27 +153,21 @@ class TournamentController:
 
 		# Le meilleur joueur de la moitié supérieure est jumelé avec le meilleur joueur
 		# de la moitié inférieure, et ainsi de suite
-		while index_count < max_index_count:
-			# pair = (
-			# 	[high_ranked[index_count], {'score_player': None}], 
-			# 	[low_ranked[index_count], {'score_player': None}]
-			# )
-			# pairs.append(pair)
-			
+		while index_count < max_index_count:			
 			player_one = high_ranked[index_count].copy()
 			player_two = low_ranked[index_count].copy()
 			created_pair = [player_one, player_two]
 			existing_pairs.append(created_pair)
 			
-			score_base_list.append(player_one)
-			score_base_list.append(player_two)
+			score_base_list.append(player_one.copy())
+			score_base_list.append(player_two.copy())
 
 			index_count += 1
 		
 		return score_base_list, existing_pairs
 
 
-	def create_round(self, score_base_listx, existing_pairs):
+	def create_round(self, score_base_list, existing_pairs):
 		self.round_counter += 1
 		round_count = "Round " + str(self.round_counter)
 		round_message = """
@@ -187,64 +175,38 @@ class TournamentController:
 		----------------------- """ + round_count + """ -----------------------
 		
 		"""
-		continue_message = "Souhaitez-vous ajouter un autre round ? (o/n) "
+		continue_message = "Souhaitez-vous ajouter un autre round ? (o/n): "
 		r = self.manager_view.prompt_command(continue_message)
 		if r == "o":
-			if 'score_player' in score_base_listx[0]:
+			if 'score_player' in score_base_list[0]:
 				self.manager_view.show_message(round_message)
-				sb_list = sorted(score_base_listx, key=lambda x: x['score_player'], reverse=True)
-				
+				score_list = sorted(score_base_list, key=lambda x: x['score_player'], reverse=True)
 
-				for e in existing_pairs[0]:
-					e.pop('score_player')
+				index_player_one = 0
+				index_player_two = index_player_one + 1
+				match_list = []
+				nw_lst = []
+				max_count_player = 8
 
-				print(existing_pairs)
-				# triez tous les joueurs en fonction de leur nombre total de points.
-				# Si plusieurs joueurs ont le même nombre de points, 
-				# triez-les en fonction de leur rang
+				#while nwsortlst < max_count_player:
 
-				yw = 0
-				wy = yw + 1
-				max_player_count = 8
-				nwlst = []
-				nwsortlst = []
-				print(existing_pairs)
-
-				# Associez le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4, et ainsi de suite. 
-				# Si le joueur 1 a déjà joué contre le joueur 2, associez-le plutôt au joueur 3.
-				# Répétez les étapes 3 et 4 jusqu'à ce que le tournoi soit terminé.
-			
-				# ------------------ v1 -----------------------------
-				while yw < max_player_count:
-					# Boucle joueur 1 associé au joueur avec le score le plus proche
-					# Si le joueur 1 a déjà jouer avec joueur 2 alors jouer avec joueur 3 
-					# if pr in existing_pairs:
-					# 	wy += 1
-					# else:
-					# while pr in prs:
-					# wy + 1
-					k = [sb_list[yw], sb_list[wy]]
-					w = k.copy()
-					w.pop('score_player')
-
-					if w in existing_pairs:
-						while k in existing_pairs:
-							wy += 1
+				while index_player_one < max_count_player:
+					
+					if 'score_player' in score_list[index_player_one]:
+						v, pair_match, player_one, player_two = self.check_new_pair(
+							score_list, index_player_one, index_player_two, existing_pairs
+						)
+						existing_pairs.append(v)
+						match_list.append(pair_match)
+						nw_lst.append(player_one)
+						nw_lst.append(player_two)
 						
-						print("Pair already exist")
-					else:
-						zw = sb_list[yw].copy()
-						swz = sb_list[wy].copy()
-						existing_pairs.append(k)
-						nwlst.append(k)
-						nwsortlst.append(zw)
-						nwsortlst.append(swz)
-					yw += 2
-					wy += 2
+					index_player_one += 2
+					index_player_two += 2
 				
-				self.manager_view.show_json(nwlst)
-				self.register_result(nwsortlst)
-				return self.create_round(nwsortlst, existing_pairs)
+				self.manager_view.show_json(match_list)
+				self.register_result(nw_lst)
+				return self.create_round(nw_lst, existing_pairs)
 			else:
 				requirement_message = "Les conditions ont été non remplie pour continuer"
 				self.manager_view.show_message(requirement_message)
@@ -253,6 +215,32 @@ class TournamentController:
 			return
 		else:
 			self.manager_view.show_message(self.error_message)
+
+	def check_new_pair(self, score_list, index_player_one, index_player_two, existing_pairs):
+		pair_match = [score_list[index_player_one], score_list[index_player_two]]
+		player_one = score_list[index_player_one].copy()
+		player_two = score_list[index_player_two].copy()
+		x = player_one.copy()
+		y = player_two.copy()
+		
+		x.pop('score_player')
+		y.pop('score_player')
+		
+		new_pair = [x, y]
+		
+		if new_pair in existing_pairs:
+			print('STOP ALREADY THERE')
+			new_list = score_list
+			new_index = index_player_two + 2
+			if new_index == 7:
+				new_index - 8
+			new_list.insert(new_index, score_list[index_player_two])
+			new_list.pop(index_player_two)
+			print(new_index)
+			print(new_list)
+			return self.check_new_pair(new_list, index_player_one, index_player_two, existing_pairs)
+		else:
+			return new_pair, pair_match, player_one, player_two
 
 
 	def register_result(self, sbl):
@@ -279,10 +267,7 @@ class TournamentController:
 			self.manager_view.show_json(p)
 			m = self.manager_view.prompt_command(score_message)
 			if m == "1" or m == "0" or m == "0.5":
-				if m == "0.5":
-					r = float(m)
-				else:
-					r = int(m)
+				r = float(m)
 				if 'score_player' in p: 
 					p['score_player'] = p['score_player'] + r
 				else:
@@ -300,3 +285,17 @@ class TournamentController:
 			else:
 				self.manager_view.show_message(wrong_score_message)
 		return sbl
+	
+	
+	def save_round(self, round_name, round_instance):
+		ended_round = "Le round est-il terminé ? (o/n): "
+		round_status = self.manager_view.prompt_command(ended_round)
+		if round_status == "o":
+			finish_at = datetime.datetime.now()
+			round_object = [round_name, round_instance, finish_at]
+		elif round_status == "n":
+			finish_at = None
+			round_object = [round_name, round_instance, finish_at]
+		else:
+			self.manager_view.show_message(self.error_message)
+		self.round_model.save(Round, round_object)
