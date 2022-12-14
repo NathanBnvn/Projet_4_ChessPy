@@ -10,7 +10,10 @@ class Match(UserList):
 
 
 	def __init__(self, player_1, player_2, score_player_1, score_player_2):
-		self.match = ([player_1, score_player_1], [player_2, score_player_2])
+		self.match = (
+			[player_1, score_player_1], 
+			[player_2, score_player_2]
+		)
 	
 
 	def serializer(self, match):

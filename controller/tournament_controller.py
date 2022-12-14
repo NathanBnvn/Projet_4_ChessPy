@@ -237,7 +237,7 @@ class TournamentController:
 			print('STOP ALREADY THERE')
 			new_list = score_list
 			new_index = index_player_two + 2
-			if new_index >= 7:
+			if new_index > 3:
 				new_index - 8
 			new_list.insert(new_index, score_list[index_player_two])
 			new_list.pop(index_player_two)

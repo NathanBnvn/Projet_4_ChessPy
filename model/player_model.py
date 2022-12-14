@@ -40,15 +40,27 @@ class Player:
 
 
         def update(self, category, new_value, player_id):
-                updated_player = self.player_model.player_table.update(
-                        {category: new_value}, 
-                        doc_ids = [player_id]
-                        )
+                if player_id.isinstance(player_id, int):
+                        updated_player = self.player_model.player_table.update(
+                                {category: new_value}, 
+                                doc_ids = [player_id]
+                                )
+                elif player_id.isinstance(player_id, str):
+                        updated_player = self.player_model.player_table.update(
+                                {category: new_value}, 
+                                self.player_model.player_query.last_name == player_id
+                                )       
                 return updated_player
 
 
         def get(self, player_id):
                 player = self.player_model.player_table.get(doc_id=player_id)
+                return player
+        
+        def get_by_name(self, player_name):
+                player = self.player_model.player_table.search(
+                        self.player_model.player_query.last_name == player_name
+                        )
                 return player
 
 
