@@ -83,7 +83,7 @@ class ManagerController:
     def update_process(self, data_model):
         success_message = "La donnée a bien été mis à jour"
         no_data_message = "Aucune donnée existante. Veuillez en ajouter"
-        wrong_date_format = "Veuillez entrer la date dans un format valide !"
+        something_went_wrong = "Un problème est survenu. Veuillez réessayer."
         quit_message = "Vous venez d'interrompre votre mise à jour"
 
         elements = data_model.get_all(self)
@@ -92,7 +92,6 @@ class ManagerController:
 
             element_id = self.check_id_input(len(elements))
             if element_id:
-                print(element_id)
                 element = data_model.get(self, element_id)
                 self.manager_view.show_json(self, element)
 
@@ -105,11 +104,23 @@ class ManagerController:
                     else:
                         self.manager_view.show_message(self, quit_message)
                 elif 'players' in category:
-                    # @TODO METTRE A JOUR LES JOUEURS
                     selected_players = element['players']
-                    updated_player = self.update_player_tournament(selected_players)
-                    if updated_player:
-                        self.manager_view.show_message(self, success_message)
+                    category, new_value, player_last_name, selected_players = self.update_player_tournament(
+                        selected_players
+                    )
+                    if new_value:
+                        update_player = self.player_model.update(
+                            self, category, new_value, player_last_name
+                            )
+                        update_tournament = self.tournament_model.update(
+                            self, 'player', selected_players, element_id
+                            )
+                        if update_player or update_tournament:
+                            self.manager_view.show_message(self, success_message)
+                        else:
+                            self.manager_view.show_message(
+                                self, something_went_wrong
+                            )
                     else:
                         self.manager_view.show_message(self, quit_message)
                 else:
@@ -120,8 +131,9 @@ class ManagerController:
             self.manager_view.show_message(self, no_data_message)
 
 
+    # @TODO METTRE A JOUR LES ROUNDS
+
     def update_round(self, selected_rounds):
-        # @TODO METTRE A JOUR LES ROUNDS
         update_message = "Quelle round souhaitez vous modifier ? (par ex: Round 1) : "
         not_found_message = "Cette valeur ne correspond à rien. Veuillez réessayer"
         # update_data_message = "Quelle donnée souhaitez vous modifier ? (nom du round/ match) : "
@@ -164,16 +176,18 @@ class ManagerController:
         while True:
             if selected_players:
                 if len(selected_players) > 1: 
-                    selected_player = self.manager_view.prompt_command(self, select_message)
-                    if any(players['last_name'] == selected_player for players in selected_players):
-                        saved_player = self.player_model.get_by_name(self, selected_player)
+                    selected_player_name = self.manager_view.prompt_command(self, select_message)
+                    if any(players['last_name'] == selected_player_name for players in selected_players):
+                        saved_player = self.player_model.get_by_name(self, selected_player_name)
                         category = self.select_updating_content(saved_player[0])
                         new_value = self.manager_view.prompt_command(self, value_message)
-                        update_player = self.player_model.update(self, category, new_value, selected_player)
-                        # update to player model
-                        print(saved_player)
-                        update_tournament = self.tournament_model.update(self, 'player', edited_players, element_id)
-                        return 
+                        edited_players = list(
+                            filter(
+                            lambda player: player['last_name'] == selected_player_name, selected_players
+                            )
+                        )
+                        edited_players[0][category] = new_value
+                        return category, new_value, selected_player_name, selected_players
                     else:
                         self.manager_view.show_message(self, not_found_message)
                 else:
@@ -181,10 +195,8 @@ class ManagerController:
                     saved_player = self.player_model.get_by_name(self, player_last_name)
                     category = self.select_updating_content(saved_player[0])
                     new_value = self.manager_view.prompt_command(self, value_message)
-                    update_player = self.player_model.update(self, category, new_value, player_last_name)
-                    selected_player[0][category] = new_value
-                    update_tournament = self.tournament_model.update(self, 'player', selected_player, player_last_name)
-                    return update_player, update_tournament
+                    selected_players[0][category] = new_value
+                    return category, new_value, player_last_name, selected_players
 
 
     def select_updating_content(self, element):
@@ -225,23 +237,6 @@ class ManagerController:
         if new_value == "quit":
             self.manager_view.show_message(self, quit_message)
             return
-        elif 'date' in new_value:
-            # @TODO VERIFIER LE FORMAT DE LA DATE
-            print("checking date format...")
-            #try:
-            #   date = datetime.datetime.strptime(new_value, "%d/%m/%Y")
-            #   possible_date = 
-            #     if isinstance(possible_date, datetime.date):
-            #         if date >= possible_date:
-            #           update_element = data_model.update(self, category, new_value, element_id)
-            #         else:
-            #             self.manager_view.show_message(self, wrong_timeline)
-            #     else:
-            #         user_content.append(date.strftime('%d/%m/%Y'))
-
-            #except ValueError:
-            #    self.manager_view.show_message(self, wrong_date_format)
-
         else:
             update_element = data_model.update(self, category, new_value, element_id)
             if element_id in update_element:

@@ -56,7 +56,6 @@ class TournamentController:
 		tournament = self.create_tournament()
 		if tournament:
 			pair_message = "Souhaitez-vous générer des paires pour les matchs ? (o/n): "
-			end_tournament_message = "Le tournois est-il terminé ? (o/n): "
 			user_choice = self.manager_view.prompt_command(pair_message)
 			if user_choice == 'o':
 				self.pairing(tournament)
@@ -117,31 +116,25 @@ class TournamentController:
 
 
 	# ALGORITHME DE TRI POUR SYSTEME DE TOURNOIS SUISSE
-
+	# n'oublie qu'il prend en paramêtre le tournois
 	def pairing(self):
-
 		self.round_counter = 1
-		round_count = "Round " + str(self.round_counter)
-		round_message = """
-
-		----------------------- """ + round_count + """ -----------------------
-		
-		"""
+		ranking_error = "Il semble que tous les joueurs ne soient classés"
 		tournament = self.tournament_model.get(self, 21)
 		players = tournament['players']
-
-		# players = tournament[6]
 		existing_pairs = []
-		ranked_list, existing_pairs = self.create_first_round(players, existing_pairs)
-		self.manager_view.show_message(round_message)
-		self.manager_view.show_json(existing_pairs)
-		score_base_list = self.register_result(ranked_list)
-		#if pairs:
-			# save model
-			#round_model
-			
-		if score_base_list:
-			self.create_round(score_base_list, existing_pairs)
+		
+		# players = tournament[6]
+		if any(player['ranking'] for player in players):
+			ranked_list, existing_pairs = self.create_first_round(players, existing_pairs)
+			self.define_round()
+			self.manager_view.show_json(existing_pairs)
+			score_base_list = self.register_result(ranked_list)
+				
+			if score_base_list:
+				self.create_round(score_base_list, existing_pairs)
+		else:
+			self.manager_view.show_message(ranking_error)
 
 
 	def create_first_round(self, players, existing_pairs):
@@ -174,124 +167,116 @@ class TournamentController:
 
 	def create_round(self, score_base_list, existing_pairs):
 		self.round_counter += 1
-		round_count = "Round " + str(self.round_counter)
-		round_message = """
-
-		----------------------- """ + round_count + """ -----------------------
-		
-		"""
 		continue_message = "Souhaitez-vous ajouter un autre round ? (o/n): "
 		r = self.manager_view.prompt_command(continue_message)
 		if r == "o":
 			if 'score_player' in score_base_list[0]:
-				self.manager_view.show_message(round_message)
-				score_list = sorted(score_base_list, key=lambda x: x['score_player'], reverse=True)
+				score_list = sorted(
+					score_base_list, 
+					key=lambda player: player['score_player'], 
+					reverse=True
+				)
 
 				index_player_one = 0
 				index_player_two = index_player_one + 1
 				match_list = []
 				nw_lst = []
-				max_count_player = 8
-
-				#while nwsortlst < max_count_player:
-
-				while index_player_one < max_count_player:
-					
-					if 'score_player' in score_list[index_player_one]:
-						v, pair_match, player_one, player_two = self.check_new_pair(
-							score_list, index_player_one, index_player_two, existing_pairs
-						)
-						existing_pairs.append(v)
-						match_list.append(pair_match)
-						nw_lst.append(player_one)
-						nw_lst.append(player_two)
-						
-					index_player_one += 2
-					index_player_two += 2
+				max_match_count = 4
 				
-				self.manager_view.show_json(match_list)
-				self.register_result(nw_lst)
-				return self.create_round(nw_lst, existing_pairs)
-			else:
-				requirement_message = "Les conditions ont été non remplie pour continuer"
-				self.manager_view.show_message(requirement_message)
+				y = score_list.copy()
 
+				while len(match_list) < max_match_count:
+					x = self.test(nw_lst, match_list, y, index_player_one, index_player_two, existing_pairs)
+					if x == 'stop':
+						break
+
+				if len(match_list) == max_match_count:
+					self.define_round()
+					self.manager_view.show_json(match_list)
+					self.register_result(nw_lst)
+					return self.create_round(nw_lst, existing_pairs)
+			else:
+				requirement_message = "Les conditions n'ont pas été remplie pour continuer"
+				self.manager_view.show_message(requirement_message)
 		elif r == "n":
 			return
 		else:
 			self.manager_view.show_message(self.error_message)
 
-	def check_new_pair(self, score_list, index_player_one, index_player_two, existing_pairs):
-		pair_match = [score_list[index_player_one], score_list[index_player_two]]
-		player_one = score_list[index_player_one].copy()
-		player_two = score_list[index_player_two].copy()
-		x = player_one.copy()
-		y = player_two.copy()
-		
-		x.pop('score_player')
-		y.pop('score_player')
-		
-		new_pair = [x, y]
-		
-		if new_pair in existing_pairs:
-			print('STOP ALREADY THERE')
-			new_list = score_list
-			new_index = index_player_two + 2
-			if new_index > 3:
-				new_index - 8
-			new_list.insert(new_index, score_list[index_player_two])
-			new_list.pop(index_player_two)
-			print(new_index)
-			print(new_list)
-			return self.check_new_pair(new_list, index_player_one, index_player_two, existing_pairs)
-		else:
-			return new_pair, pair_match, player_one, player_two
+
+	def test(self, nw_lst, match_list, y, index_one, index_two, existing_pairs):
+		error_message = "Il semble qu'il n'y ai plus de combinaisons possibles"
+		try:
+			p_one = y[index_one]
+			p_two = y[index_two]
+			pair = [p_one, p_two]
+			x = y.copy()
+			one = x[index_one].copy()
+			one.pop('score_player')
+			two = x[index_two].copy()
+			two.pop('score_player')
+
+			z = [one, two]
+			if z in existing_pairs:
+				index_two += 1
+				return self.test(nw_lst, match_list, y, index_one, index_two, existing_pairs)
+			else:
+				nw_lst.append(p_one)
+				nw_lst.append(p_two)
+				y.pop(index_one)
+				y.pop(index_two-1)
+				existing_pairs.append(z)
+				match_list.append(pair)
+				return nw_lst, match_list, existing_pairs
+		except IndexError:
+			self.manager_view.show_message(error_message)
+			return 'stop'
 
 
 	def register_result(self, sbl):
-		y = 3
-		x = 0
-		z = 0
+		max_match_count = 3
+		match_count = 0
+		player_count = 0
 		px = 0
 		score_message = "Veuillez entrer le score du joueur/joueuse : "
 		interrupt_message = "Vous venez d'interrompre votre action"
 		successfully_registered_message = "Le score a bien été enregistré"
 		wrong_score_message = "Le score ne peut être que 0, 1 ou 0.5. Veuillez réessayer s'il vous plait"
-		while x <= y:
-			#u = paris[x][z]
+		while match_count <= max_match_count:
 			p = sbl[px]
 			player_message = """
 
-			----------------------- MATCH """ + str(x+1) + """ -----------------------
+			----------------------- MATCH """ + str(match_count+1) + """ -----------------------
 
-			----------------------- JOUEUR """ + str(z+1) + """ -----------------------
+			----------------------- JOUEUR """ + str(player_count+1) + """ -----------------------
 
 			"""
 
 			self.manager_view.show_message(player_message)
 			self.manager_view.show_json(p)
-			m = self.manager_view.prompt_command(score_message)
-			if m == "1" or m == "0" or m == "0.5":
-				r = float(m)
+			response = self.manager_view.prompt_command(score_message)
+			if response == "1" or response == "0" or response == "0.5":
+				result = float(response)
 				if 'score_player' in p: 
-					p['score_player'] = p['score_player'] + r
+					p['score_player'] = p['score_player'] + result
 				else:
-					p['score_player'] = r
+					p['score_player'] = result
 				self.manager_view.show_message(successfully_registered_message)
-				z += 1
-				if z > 1:
-					z = 0
-					x += 1
+				player_count += 1
+				if player_count > 1:
+					player_count = 0
+					match_count += 1
 				px += 1
-				#self.round_model.save(Match, paris[x])
-			elif m == "quit":
+				# self.save_match()
+				# self.save_round()
+			elif response == "quit":
 				self.manager_view.show_message(interrupt_message)
 				break
 			else:
 				self.manager_view.show_message(wrong_score_message)
 		return sbl
 	
-	
+
 	def save_round(self, round_name, round_instance):
 		ended_round = "Le round est-il terminé ? (o/n): "
 		round_status = self.manager_view.prompt_command(ended_round)
@@ -304,3 +289,14 @@ class TournamentController:
 		else:
 			self.manager_view.show_message(self.error_message)
 		self.round_model.save(Round, round_object)
+	
+
+	def define_round(self):
+		round_count = "Round " + str(self.round_counter)
+		round_message = """
+
+		----------------------- """ + round_count + """ -----------------------
+		
+		"""
+		self.manager_view.show_message(round_message)
+		return round_count

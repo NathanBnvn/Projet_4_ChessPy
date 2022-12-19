@@ -14,7 +14,7 @@ This program works in the terminal
 
 ### Download
 
-Download the project from github
+To get the project from github
 ```bash
   git clone https://github.com/NathanBnvn/Projet_4_ChessPy.git
 
@@ -23,7 +23,7 @@ Download the project from github
 
 ### Setup
 
-First of all you'll need to create a virtual environement like so :
+First of all, you will need to create a virtual environement like so :
 
 **on Mac or Linux**
 
@@ -80,7 +80,10 @@ $ quit
 ```
 
 
-This project use flake8, so you can generate a report with this command:
+
+### PEP5 & Flake 8
+
+This project respect PEP5 conventions and use flake8, so you can generate a HTML report with this command:
 
 ```sh
 
