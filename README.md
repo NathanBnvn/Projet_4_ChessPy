@@ -7,7 +7,8 @@ _Photo by Felix Mittermeier on Unsplash_
 
 ### Introduction
 ChessPy is a chess tournament management program. 
-With this project, you can create tournament, players and generate reports of registered tournaments, rounds, matchs and players
+With this project, you can create tournament, 
+players and generate reports of registered tournaments, rounds, matchs and players
 This project has been realised with python, according to the MVC structure and tinyDB. 
 This program works in the terminal
 
@@ -23,7 +24,8 @@ To get the project from github
 
 ### Setup
 
-First of all, you will need to create a virtual environement like so :
+First of all, you will need to create 
+a virtual environement like so :
 
 **on Mac or Linux**
 
@@ -41,7 +43,6 @@ $ source venv/bin/activate
 
 ```
 
-
 **on Windows**
 
 ```sh
@@ -58,6 +59,15 @@ $ .\env\Scripts\activate
 
 ```
 
+Then use the following command to install 
+this project dependencies :
+
+```sh
+
+$ pip freeze > requirements.txt
+
+```
+
 
 ### Usage
 
@@ -69,9 +79,11 @@ $ python main.py
 
 ```
 
-Then you can follow the different instructions in the menus
+Then you can follow the different 
+instructions in the menus
 
-During an action, you can interrupt the process by typing in prompt command: 
+During an action, you can interrupt 
+the process by typing in prompt command: 
 
 ```sh
 
@@ -80,10 +92,10 @@ $ quit
 ```
 
 
-
 ### PEP5 & Flake 8
 
-This project respect PEP5 conventions and use flake8, so you can generate a HTML report with this command:
+This project respect PEP5 conventions and use flake8, 
+so you can generate a HTML report with this command:
 
 ```sh
 
