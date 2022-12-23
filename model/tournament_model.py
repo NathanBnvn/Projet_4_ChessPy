@@ -64,7 +64,7 @@ class Tournament:
                 doc_ids=[tournament_id]
             )
         except ValueError:
-            updated_tournament = self.table_model.update(
+            updated_tournament = table_model.update(
                 {category: new_value},
                 self.tournament_model.query.name == tournament_id
             )

@@ -87,10 +87,7 @@ class TournamentController:
         players_index = 6
         if tournament:
             players = self.player_controller.add_player_to_tournament()
-            if len(tournament) == len(input_tournament):
-                tournament.insert(round_index, None)
-                tournament.insert(players_index, None)
-            elif len(tournament) < minimum_count:
+            if len(tournament) < minimum_count:
                 while len(tournament) < tournament_property_count:
                     tournament.append(None)
             elif len(tournament) > round_index-1:
@@ -115,7 +112,6 @@ class TournamentController:
     def pairing(self, tournament):
         self.round_counter = 1
         ranking_error = "Il semble que tous les joueurs ne soient classés"
-        tournament = self.tournament_model.get(self, 21)
         players = tournament[6]
         existing_pairs = []
 
@@ -310,15 +306,20 @@ class TournamentController:
 
         for x in range(4):
             player_one = matchs[x][0].copy()
-            player_one.pop('score_player')
             player_two = matchs[x][1].copy()
-            player_two.pop('score_player')
-            match_instance = [
-                [player_one, {'score_player': matchs[x][0]['score_player']}],
-                [player_two, {'score_player': matchs[x][1]['score_player']}]
-            ]
-            instance.append(match_instance)
-            self.match_model.save(self, match_instance)
+            if 'score_player' in player_one:
+                player_one.pop('score_player')
+                player_two.pop('score_player')
+                match_instance = [
+                    [player_one, {
+                        'score_player': matchs[x][0]['score_player']
+                        }],
+                    [player_two, {
+                        'score_player': matchs[x][1]['score_player']
+                        }]
+                ]
+                instance.append(match_instance)
+                self.match_model.save(self, match_instance)
 
         round_object = [{
             'name': round_name,
