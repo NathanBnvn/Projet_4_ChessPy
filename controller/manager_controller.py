@@ -255,6 +255,7 @@ class ManagerController:
     def check_id_input(self, instances_count):
         select_id = "Veuillez sélectionner l'ID de l'instance souhaitée : "
         id_not_found = "L'ID entré ne correspond à rien. Veuillez réessayer."
+        error_message = "Veuillez entrer un nombre entier"
 
         while True:
             selected_id = self.manager_view.prompt_command(self, select_id)
@@ -267,7 +268,7 @@ class ManagerController:
                 else:
                     self.manager_view.show_message(self, id_not_found)
             else:
-                self.manager_view.show_message(self, self.error_message)
+                self.manager_view.show_message(self, error_message)
 
     def save_register(self, element_id, category, data_model):
         value_message = "Veuillez entrer la nouvelle valeur : "

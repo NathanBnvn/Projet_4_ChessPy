@@ -38,12 +38,13 @@ class Player:
         self.player_model.player_table.insert(serialized_player)
 
     def update(self, category, new_value, player_id):
-        if player_id.isinstance(player_id, int):
+        try:
+            player_id = int(player_id)
             updated_player = self.player_model.player_table.update(
                 {category: new_value},
                 doc_ids=[player_id]
                 )
-        elif player_id.isinstance(player_id, str):
+        except ValueError:
             updated_player = self.player_model.player_table.update(
                 {category: new_value},
                 self.player_model.player_query.last_name == player_id
